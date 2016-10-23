@@ -52,7 +52,7 @@ public class MegaD {
                 .setServerInfo("Test/1.1")
                 .setSocketConfig(socketConfig)
                 .setExceptionLogger(new HttpFileServer.StdErrorExceptionLogger())
-                .registerHandler("*",new MegaListener(host, listenPort))
+                .registerHandler("*",new MegaMediator(host, listenPort))
                 .create();
 
         singleExecutor.submit(() -> {
