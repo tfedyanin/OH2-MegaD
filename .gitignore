@@ -1,0 +1,4 @@
+/megad-core/build
+.idea
+.gradle
+/org.openhab.binding.megad/target
