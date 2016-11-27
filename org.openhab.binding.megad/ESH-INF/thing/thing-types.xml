@@ -1,24 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<thing:thing-descriptions bindingId="megad"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
-        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+<thing:thing-descriptions bindingId="megad" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <!-- Sample Thing Type -->
-    <thing-type id="sample">
-        <label>MegaD Binding Thing</label>
-        <description>Sample thing for MegaD Binding</description>
+	<thing-type id="megad-thing">
+		<label>MegaD thing</label>
+		<description>MegaD thing</description>
 
-        <channels>
-            <channel id="channel1" typeId="sample-channel"/>
-        </channels>
-    </thing-type>
+		<channels>
+			<channel id="P01-IN" typeId="in-channel">
+				<label>P01-IN</label>
+			</channel>
+			<channel id="P02-IN" typeId="in-channel">
+				<label>P02-IN</label>
+			</channel>
+			<channel id="P03-IN" typeId="in-channel">
+				<label>P03-IN</label>
+			</channel>
+			<channel id="P04-IN" typeId="in-channel">
+				<label>P04-IN</label>
+			</channel>
+			<channel id="P05-IN" typeId="in-channel">
+				<label>P05-IN</label>
+			</channel>
+			<channel id="P06-IN" typeId="in-channel">
+				<label>P06-IN</label>
+			</channel>
+			<channel id="P07-OUT" typeId="out-channel">
+				<label>P07-OUT</label>
+			</channel>
+			<channel id="P08-OUT" typeId="out-channel">
+				<label>P08-OUT</label>
+			</channel>
+			<channel id="P09-OUT" typeId="out-channel">
+				<label>P09-OUT</label>
+			</channel>
+			<channel id="P10-OUT" typeId="out-channel">
+				<label>P10-OUT</label>
+			</channel>
+			<channel id="P11-OUT" typeId="out-channel">
+				<label>P11-OUT</label>
+			</channel>
+			<channel id="P12-OUT" typeId="out-channel">
+				<label>P12-OUT</label>
+			</channel>
+			<channel id="P13-OUT" typeId="out-channel">
+				<label>P13-OUT</label>
+			</channel>
+		</channels>
+		<config-description>
+			<parameter name="timeout" type="integer" required="true">
+				<label>Timeout</label>
+				<description>Timeout in milliseconds for connection with MegaD</description>
+				<default>5000</default>
+			</parameter>
+			<parameter name="port" type="integer">
+				<label>Ports</label>
+				<description>Specifies the port.</description>
+				<default>80</default>
+			</parameter>
+			<parameter name="address" type="text" required="true">
+				<label>IP-address</label>
+				<description>Specifies the address of MegaD device.</description>
+			</parameter>
+			<parameter name="password" type="text" required="true">
+                <label>Password</label>
+                <description>Specifies the password token for MegaD device.</description>
+            </parameter>
+		</config-description>
+	</thing-type>
 
-    <!-- Sample Channel Type -->
-    <channel-type id="sample-channel">
-        <item-type>megadItem</item-type>
-        <label>MegaD Binding Channel</label>
-        <description>Sample channel for MegaD Binding</description>
-    </channel-type>
+
+	<channel-type id="out-channel">
+		<item-type>Switch</item-type>
+		<label>MegaD OUT channel</label>
+		<description>Switch for turn on/turn off one of out channels</description>
+	</channel-type>
+	<channel-type id="in-channel">
+		<item-type>Switch</item-type>
+		<label>MegaD IN channel</label>
+		<description>Switch for listen turn on/turn off one of in channels</description>
+		<state readOnly="true" />
+	</channel-type>
 
 </thing:thing-descriptions>
