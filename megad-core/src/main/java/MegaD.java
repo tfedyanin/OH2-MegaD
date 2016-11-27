@@ -22,18 +22,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class MegaD {
     private static Logger logger = LogManager.getLogger();
-    private static String SCHEME = "http";
-    private static String CHANNEL = "pt";
-    private static String CMD = "cmd";
-    private static String ON = ":1";
-    private static String OFF = ":0";
-    private static String GET = "get";
 
     private final String host;
     private final String password;
     private final int listenPort;
     private final CloseableHttpClient client;
-    private final ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
+    private final MegaMediator mediator;
 
 
     public MegaD(String host, String password, int listenPort, int serverSoTimeout) {
@@ -47,14 +41,17 @@ public class MegaD {
                 .setTcpNoDelay(true)
                 .build();
 
+        mediator = new MegaMediator(host, listenPort);
         final HttpServer server = ServerBootstrap.bootstrap()
                 .setListenerPort(listenPort)
                 .setServerInfo("Test/1.1")
                 .setSocketConfig(socketConfig)
-                .setExceptionLogger(new HttpFileServer.StdErrorExceptionLogger())
-                .registerHandler("*",new MegaMediator(host, listenPort))
+//                // TODO: 27.11.2016 Корректный логгер
+//                .setExceptionLogger(new HttpFileServer.StdErrorExceptionLogger())
+                .registerHandler("*", mediator)
                 .create();
 
+        ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
         singleExecutor.submit(() -> {
             try {
                 server.start();
@@ -73,12 +70,18 @@ public class MegaD {
         });
     }
 
+    /**
+     * Get channel status from MegaD device (ON or OFF)*
+     * @param channel MegaD channel
+     * @return
+     */
     public PortSwitchStatus getSwitchStatus(int channel) {
         PortSwitchStatus status = null;
         try {
+            String GET = "get";
             String body = getBody(GET, channel);
             if (body != null) {
-                status =  PortSwitchStatus.valueOf(body);
+                status = PortSwitchStatus.valueOf(body);
             }
         } catch (URISyntaxException e) {
             logger.error("Error while form URI", e);
@@ -91,15 +94,35 @@ public class MegaD {
         return status;
     }
 
-    public void turnOn(int channel) {
+    /**
+     * Turn on given channel
+     * @param channel MegaD channel
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public void turnOn(int channel) throws IOException, URISyntaxException {
+        String ON = ":1";
         turnX(channel, ON);
     }
 
-    public void turnOff(int channel) {
+    /**
+     * Turn off given channel
+     * @param channel MegaD channel
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public void turnOff(int channel) throws IOException, URISyntaxException {
+        String OFF = ":0";
         turnX(channel, OFF);
     }
 
-    public void switchState(int channel) {
+    /**
+     * Switch given channel
+     * @param channel MegaD channel
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public void switchState(int channel) throws IOException, URISyntaxException {
         switch (getSwitchStatus(channel)) {
             case ON:
                 turnOff(channel);
@@ -112,17 +135,27 @@ public class MegaD {
         }
     }
 
-    private void turnX(int channel, String cmd) {
-        try {
-            getBody(channel + cmd, channel);
-        } catch (URISyntaxException e) {
-            logger.error("Error while form URI", e);
-        } catch (IOException e) {
-            logger.error("Can't execute get to MegaD " + host, e);
-        }
-
+    /**
+     * Set MegaD channel to a given state
+     *
+     * @param channel channel on MegaD
+     * @param cmd     command for channel (ON or OFF command)
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    private void turnX(int channel, String cmd) throws IOException, URISyntaxException {
+        getBody(channel + cmd, channel);
     }
 
+    /**
+     * Execute given command on given channel on Megad, parse response and return body of response as string
+     *
+     * @param command command to MegaD
+     * @param channel channel on MegaD
+     * @return parsed response
+     * @throws URISyntaxException in case of a command is incorrect
+     * @throws IOException        in case of a problem or the connection was aborted
+     */
     private String getBody(String command, int channel) throws URISyntaxException, IOException {
         CloseableHttpResponse response = null;
         try {
@@ -144,7 +177,18 @@ public class MegaD {
         return null;
     }
 
+    /**
+     * Form message for sending to MegaD
+     *
+     * @param command command to MegaD
+     * @param channel channel for given command
+     * @return get request for sending to MegaD
+     * @throws URISyntaxException in case of a command is incorrect
+     */
     private HttpGet formGet(String command, int channel) throws URISyntaxException {
+        String SCHEME = "http";
+        String CHANNEL = "pt";
+        String CMD = "cmd";
         URI uri = new MegaDURIBuilder()
                 .setScheme(SCHEME)
                 .setHost(host)
@@ -155,28 +199,21 @@ public class MegaD {
         return new HttpGet(uri);
     }
 
+    /**
+     * Add information about device and channel for given message
+     *
+     * @param channel number of MegaD channel
+     * @param message given message
+     * @return message with extra info
+     */
     private String getInfo(int channel, String message) {
         return "Device: " + this.toString() + "; Channel: " + String.valueOf(channel) +
                 "; Message: " + message;
     }
 
-    public static void main(String[] args) throws InterruptedException, IOException {
-        MegaD megaD = new MegaD("192.168.1.51", "tac", 80, 15000);
-
-        int channel = 9;
-        int timeout = 1;
-
-        megaD.getSwitchStatus(channel);
-        megaD.turnOff(channel);
-        TimeUnit.SECONDS.sleep(timeout);
-        megaD.turnOn(channel);
-        TimeUnit.SECONDS.sleep(timeout);
-        megaD.switchState(channel);
-        TimeUnit.SECONDS.sleep(timeout);
-        megaD.turnOn(channel);
-        TimeUnit.DAYS.sleep(1);
+    public MegaMediator getMediator() {
+        return mediator;
     }
-
 
     @Override
     public String toString() {

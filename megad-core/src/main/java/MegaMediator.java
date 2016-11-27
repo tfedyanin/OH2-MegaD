@@ -70,7 +70,6 @@ public class MegaMediator implements HttpRequestHandler {
 
         int finalChannel = channel;
         listeners.forEach(l -> l.change(finalChannel, status));
-
     }
 
     public void addListener(MegaListener listener) {
