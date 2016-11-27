@@ -1,9 +1,9 @@
+package ru.ittim.oh2.megad.core;
+
 import org.apache.http.*;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.HttpCoreContext;
 import org.apache.http.protocol.HttpRequestHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * Created by Timofey on 23.10.2016.
  */
 public class MegaMediator implements HttpRequestHandler {
-    private final static Logger logger = LogManager.getLogger();
+//    private final static Logger logger = LogManager.getLogger();
     private static final String SUPPOTED_METHDOD = "GET";
     private static final Pattern channelPattern = Pattern.compile("pt=(\\d+)");
     private static final Pattern positionPattern = Pattern.compile("m=(\\d)");
@@ -37,14 +37,14 @@ public class MegaMediator implements HttpRequestHandler {
         String method = request.getRequestLine().getMethod();
         if (!SUPPOTED_METHDOD.equals(method)) {
             response.setStatusCode(HttpStatus.SC_METHOD_NOT_ALLOWED);
-            logger.error("Supported only GET method from MegaD328");
+//            logger.error("Supported only GET method from MegaD328");
             return;
         }
         InetAddress remoteAddress = ((HttpInetConnection) context.getAttribute(HttpCoreContext.HTTP_CONNECTION))
                 .getRemoteAddress();
         if (remoteAddress != null && !remoteAddress.toString().contains(host)) {
             response.setStatusCode(HttpStatus.SC_FORBIDDEN);
-            logger.error("Serve requests from " + host + " on port " + port + ", but request came from " + remoteAddress);
+//            logger.error("Serve requests from " + host + " on port " + port + ", but request came from " + remoteAddress);
             return;
         }
         String uri = request.getRequestLine().getUri();
@@ -59,7 +59,7 @@ public class MegaMediator implements HttpRequestHandler {
         }
         if (channel == null || channel < 0 || channel > 13) {
             response.setStatusCode(HttpStatus.SC_NOT_FOUND);
-            logger.error("Unsupported channel #" + channel);
+//            logger.error("Unsupported channel #" + channel);
             return;
         }
         if (posMatcher.find()) {

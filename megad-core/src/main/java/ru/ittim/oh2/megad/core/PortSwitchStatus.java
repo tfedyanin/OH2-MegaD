@@ -1,3 +1,5 @@
+package ru.ittim.oh2.megad.core;
+
 /**
  * Created by Timofey on 18.10.2016.
  */

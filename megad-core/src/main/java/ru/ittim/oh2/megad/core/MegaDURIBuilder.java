@@ -1,3 +1,5 @@
+package ru.ittim.oh2.megad.core;
+
 import org.apache.http.client.utils.URIBuilder;
 
 import java.net.URI;

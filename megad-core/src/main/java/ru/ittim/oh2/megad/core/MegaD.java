@@ -1,3 +1,5 @@
+package ru.ittim.oh2.megad.core;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -7,8 +9,6 @@ import org.apache.http.impl.bootstrap.ServerBootstrap;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  * Created by Timofey on 18.10.2016.
  */
 public class MegaD {
-    private static Logger logger = LogManager.getLogger();
+//    private static Logger logger = LogManager.getLogger();
 
     private final String host;
     private final String password;
@@ -58,7 +58,7 @@ public class MegaD {
                 server.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
             } catch (IOException | InterruptedException e) {
                 //// TODO: 23.10.2016 Обработку вовне
-                logger.error("Http server corrupted.", e);
+//                logger.error("Http server corrupted.", e);
             }
         });
 
@@ -71,8 +71,8 @@ public class MegaD {
     }
 
     /**
-     * Get channel status from MegaD device (ON or OFF)*
-     * @param channel MegaD channel
+     * Get channel status from ru.ittim.oh2.megad.core.MegaD device (ON or OFF)*
+     * @param channel ru.ittim.oh2.megad.core.MegaD channel
      * @return
      */
     public PortSwitchStatus getSwitchStatus(int channel) {
@@ -84,19 +84,19 @@ public class MegaD {
                 status = PortSwitchStatus.valueOf(body);
             }
         } catch (URISyntaxException e) {
-            logger.error("Error while form URI", e);
+//            logger.error("Error while form URI", e);
         } catch (IOException e) {
-            logger.error("Can't execute get to MegaD " + host, e);
+//            logger.error("Can't execute get to ru.ittim.oh2.megad.core.MegaD " + host, e);
         }
         if (status != null) {
-            logger.info(getInfo(channel, status.toString()));
+//            logger.info(getInfo(channel, status.toString()));
         }
         return status;
     }
 
     /**
      * Turn on given channel
-     * @param channel MegaD channel
+     * @param channel ru.ittim.oh2.megad.core.MegaD channel
      * @throws IOException
      * @throws URISyntaxException
      */
@@ -107,7 +107,7 @@ public class MegaD {
 
     /**
      * Turn off given channel
-     * @param channel MegaD channel
+     * @param channel ru.ittim.oh2.megad.core.MegaD channel
      * @throws IOException
      * @throws URISyntaxException
      */
@@ -118,7 +118,7 @@ public class MegaD {
 
     /**
      * Switch given channel
-     * @param channel MegaD channel
+     * @param channel ru.ittim.oh2.megad.core.MegaD channel
      * @throws IOException
      * @throws URISyntaxException
      */
@@ -131,14 +131,14 @@ public class MegaD {
                 turnOn(channel);
                 break;
             default:
-                logger.error("Can't switch port in UNKNOWN state");
+//                logger.error("Can't switch port in UNKNOWN state");
         }
     }
 
     /**
-     * Set MegaD channel to a given state
+     * Set ru.ittim.oh2.megad.core.MegaD channel to a given state
      *
-     * @param channel channel on MegaD
+     * @param channel channel on ru.ittim.oh2.megad.core.MegaD
      * @param cmd     command for channel (ON or OFF command)
      * @throws IOException
      * @throws URISyntaxException
@@ -150,8 +150,8 @@ public class MegaD {
     /**
      * Execute given command on given channel on Megad, parse response and return body of response as string
      *
-     * @param command command to MegaD
-     * @param channel channel on MegaD
+     * @param command command to ru.ittim.oh2.megad.core.MegaD
+     * @param channel channel on ru.ittim.oh2.megad.core.MegaD
      * @return parsed response
      * @throws URISyntaxException in case of a command is incorrect
      * @throws IOException        in case of a problem or the connection was aborted
@@ -170,7 +170,7 @@ public class MegaD {
                 try {
                     response.close();
                 } catch (IOException e) {
-                    logger.error("Can't close HTTP response", e);
+//                    logger.error("Can't close HTTP response", e);
                 }
             }
         }
@@ -178,11 +178,11 @@ public class MegaD {
     }
 
     /**
-     * Form message for sending to MegaD
+     * Form message for sending to ru.ittim.oh2.megad.core.MegaD
      *
-     * @param command command to MegaD
+     * @param command command to ru.ittim.oh2.megad.core.MegaD
      * @param channel channel for given command
-     * @return get request for sending to MegaD
+     * @return get request for sending to ru.ittim.oh2.megad.core.MegaD
      * @throws URISyntaxException in case of a command is incorrect
      */
     private HttpGet formGet(String command, int channel) throws URISyntaxException {
@@ -202,7 +202,7 @@ public class MegaD {
     /**
      * Add information about device and channel for given message
      *
-     * @param channel number of MegaD channel
+     * @param channel number of ru.ittim.oh2.megad.core.MegaD channel
      * @param message given message
      * @return message with extra info
      */
@@ -217,7 +217,7 @@ public class MegaD {
 
     @Override
     public String toString() {
-        return "MegaD{" +
+        return "ru.ittim.oh2.megad.core.MegaD{" +
                 "host='" + host + '\'' +
                 ", listenPort=" + listenPort +
                 '}';
