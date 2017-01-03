@@ -18,11 +18,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Timofey on 18.10.2016.
+ * Timofey on 18.10.2016 20:27.
  */
 public class MegaD {
-//    private static Logger logger = LogManager.getLogger();
-
     private final String host;
     private final String password;
     private final int listenPort;
@@ -73,7 +71,7 @@ public class MegaD {
     /**
      * Get channel status from ru.ittim.oh2.megad.core.MegaD device (ON or OFF)*
      * @param channel ru.ittim.oh2.megad.core.MegaD channel
-     * @return
+     * @return channel's status
      */
     public PortSwitchStatus getSwitchStatus(int channel) {
         PortSwitchStatus status = null;
@@ -83,13 +81,11 @@ public class MegaD {
             if (body != null) {
                 status = PortSwitchStatus.valueOf(body);
             }
-        } catch (URISyntaxException e) {
-//            logger.error("Error while form URI", e);
-        } catch (IOException e) {
-//            logger.error("Can't execute get to ru.ittim.oh2.megad.core.MegaD " + host, e);
+        } catch (URISyntaxException | IOException ignored) {
+            // TODO: 03.01.2017
         }
         if (status != null) {
-//            logger.info(getInfo(channel, status.toString()));
+            // TODO: 03.01.2017
         }
         return status;
     }
@@ -131,7 +127,7 @@ public class MegaD {
                 turnOn(channel);
                 break;
             default:
-//                logger.error("Can't switch port in UNKNOWN state");
+                // TODO: 03.01.2017
         }
     }
 
@@ -170,7 +166,7 @@ public class MegaD {
                 try {
                     response.close();
                 } catch (IOException e) {
-//                    logger.error("Can't close HTTP response", e);
+                    // TODO: 03.01.2017
                 }
             }
         }
@@ -211,13 +207,21 @@ public class MegaD {
                 "; Message: " + message;
     }
 
-    public MegaMediator getMediator() {
-        return mediator;
+    public void addListener(MegaListener listener) {
+        mediator.addListener(listener);
+    }
+
+    public void removeListener(MegaListener listener) {
+        mediator.removeListener(listener);
+    }
+
+    public void removeAllListeners() {
+        mediator.removeAllListeners();
     }
 
     @Override
     public String toString() {
-        return "ru.ittim.oh2.megad.core.MegaD{" +
+        return "MegaD{" +
                 "host='" + host + '\'' +
                 ", listenPort=" + listenPort +
                 '}';
